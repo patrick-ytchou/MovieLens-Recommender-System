@@ -17,14 +17,50 @@ def load_data(filepath):
     df = pd.read_csv(filepath)
     return df
 
-def preprocessing(df, train_size):
+def preprocessing(df):
+    """
+    Proprocess the data accordingly.
+    """
+    
+    # # make userid goes from 0...N-1
+    # df.user_id = df.user_id - 1
+    
+    # create a new mapping for business id to create a continuous ids    
+    unique_business_ids = set(df.business_id.values)
+    buisness2idx = {}
+    new_id = 0
+    for old_id in unique_business_ids:
+        buisness2idx[old_id] = new_id
+        new_id += 1    
+        
+    
+    # create a new mapping for user id to create a continuous ids
+    unique_user_ids = set(df.user_id.values)
+    user2idx = {}
+    new_id = 0
+    for old_id in unique_user_ids:
+        user2idx[old_id] = new_id
+        new_id += 1
+    
+    df['business_idx'] = df.apply(lambda row: buisness2idx[row.business_id], axis=1)
+    df['user_idx'] = df.apply(lambda row: user2idx[row.user_id], axis=1)
+    # df = df.drop(columns=['timestamp'])
+
+    # df = df[['user_idx', 'business_idx', 'stars']]
+    df['stars'] = df['stars'].apply(lambda x: float(x))    
+
+    df.to_csv('data/edited_review.csv')
+    return df
+
+
+
+def prep_for_modeling(df, train_size):
     """
     Conduct preprocessing to the data for later modeling.
     """
-    N = df.userId.max() + 1 # num of users
-    M = df.movie_idx.max() + 1 # num of movies
+    N = len(list(set(df.user_idx))) + 1 # num of users
+    M = len(list(set(df.business_idx))) + 1 # num of movies
     print(N, M)
-    # split data into train and test
     df = shuffle(df)
     cutoff_point = int(train_size*len(df))
     df_train = df.iloc[:cutoff_point]
@@ -76,45 +112,32 @@ def modeling(df_train, df_test, N, M, epochs, batch_size, dim, reg):
         metrics = ['mse']
     )
     
+    print(model.summary())
+    
     r = model.fit(  
-        x = [df_train.userId.values, df_train.movie_idx.values],
-        y = df_train.rating.values,        
+        x = [df_train.user_idx.values, df_train.business_idx.values],
+        y = df_train.stars.values,        
         # y = df_train.rating.values - mu,
         epochs = epochs,
         batch_size = batch_size,
         validation_data = (
-            [df_test.userId.values, df_test.movie_idx.values],
+            [df_test.user_idx.values, df_test.business_idx.values],
             # df_test.rating.values - mu
-            df_test.rating.values
+            df_test.stars.values
         )
     )
     return model, r
 
-# def plot_result(model):
-#     """
-#     Plot the mode result.
-#     """
-#     # plot losses
-#     plt.plot(model.history['loss'], label='train loss')
-#     plt.plot(model.history['val_loss'], label = 'test loss')
-#     plt.legend()
-#     plt.show()
-    
-#     # plot mse
-#     plt.plot(model.history['mean_squared_error'], label='train mse')
-#     plt.plot(model.history['val_squared_error'], label = 'test mse')
-#     plt.legend()
-#     plt.show()
-
 if __name__ == "__main__":
     print("Now: Load data.")
-    df = load_data("data/edited_rating.csv")
+    df = load_data("data/review.csv")
     print("Now: Implement preprocessing.")
-    N, M, df_train, df_test = preprocessing(df, train_size = .8)
+    df = preprocessing(df)
+    # df = df[['user_idx', 'business_idx', 'stars']]
+    N, M, df_train, df_test = prep_for_modeling(df, train_size = .8)
     print("Now: Model training.")
-    model, r = modeling(df_train, df_test, N, M, epochs = 3, batch_size = 2048, dim = 10, reg = 0.01)
-    print("Now: Save Model.")
-    model.save("model/mf_deep_v3.h5")
-    print("Now: Save Weights.")
-    model.save_weights("model/mf_deep_v3_weight.h5")
-    # plot_result(r)
+    model, r = modeling(df_train, df_test, N, M, epochs = 5, batch_size = 2048, dim = 30, reg = 0.1)
+    # print("Now: Save Model.")
+    # model.save("model/model_v1.h5")
+    # print("Now: Save Weights.")
+    # model.save_weights("model/model_weight_v1.h5")
