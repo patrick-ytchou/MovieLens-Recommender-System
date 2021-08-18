@@ -106,5 +106,3 @@ model.compile(
     metrics = ['mse']
 )
 ```
-
-### Repo Structure
