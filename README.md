@@ -16,6 +16,10 @@ From the navgation drop-down selection on the left, choose **Matrix Factorizatio
 This temporary system structure is illustrated in the image below.
 Since the incoming traffic is estimated to be quite low, we simply use a application load balancer with an auto-scaling group.
 
+<p align="center">
+  <img src="image/system-design.png" title="system design graph">
+</p>
+
 
 *Future Improvement*: 
 
