@@ -51,8 +51,6 @@ def app():
 
 
     # Set requests
-    # business_id = 'default'
-    # url = f"https://api.yelp.com/v3/businesses/{business_id}"
     key = 'qH6lx8n0QgpbkxCSeoBugx0OaSUlaxM-KRrJQjqB7moVuGB5TZzCGVdewYhghcNtVt5Mqkofd1xGB9xvgmYp5L0ae-yNIbBqhgark3I29rDFrlwNaqaJqwwDqOQHYXYx'
     headers = {'Authorization': f'Bearer {key}'}
 
@@ -60,16 +58,11 @@ def app():
 
     @st.cache(allow_output_mutation=True)
     def get_api_responses(business_idxs):
-        # business_infos = []
-        # business_ids = []
         responses = []
         for bid in business_idxs:
-            # business_infos.append(business_idx_mapping[bid])
-            # business_ids.append(business_idx_mapping[bid]['business_id'])
             url = f"https://api.yelp.com/v3/businesses/{business_idx_mapping[bid]['business_id']}"
             response = requests.get(url, headers = headers).json()
             responses.append(response)
-        # return business_infos, business_ids, responses
         return responses
 
     # business_infos, business_ids, responses = get_api_responses(business_idxs)
@@ -79,8 +72,6 @@ def app():
     # col1, col2, col3, col4, col5 = st.beta_columns(5)
     col1, col2, col3 = st.beta_columns(3)
     with col1:
-        # business_info = business_infos[0]
-        # business_id = business_ids[0]
         response = responses[0]
         
         image_url = response['image_url']
@@ -96,7 +87,6 @@ def app():
                 categories.append(cat['title'])
             st.markdown(f"**Categories**: {', '.join(categories)}")
             st.markdown(f"[_Yelp link_]({response['url']})")
-            # st.text("Please rate how much you like this store:")
             slider_val = st.slider("Rating #1", 1, 5, 1)
             submitted = st.form_submit_button("Submit your rating")
             if submitted:
@@ -105,8 +95,6 @@ def app():
                 user_ratings[0] = slider_val
 
     with col2:
-        # business_info = business_infos[0]
-        # business_id = business_ids[0]
         response = responses[1]
         
         image_url = response['image_url']
@@ -122,7 +110,6 @@ def app():
                 categories.append(cat['title'])
             st.markdown(f"**Categories**: {', '.join(categories)}")
             st.markdown(f"[_Yelp link_]({response['url']})")
-            # st.text("Please rate how much you like this store:")
             slider_val = st.slider("Rating #2", 1, 5, 1)
             submitted = st.form_submit_button("Submit your rating")
             if submitted:
@@ -131,8 +118,6 @@ def app():
                 user_ratings[1] = slider_val
 
     with col3:
-        # business_info = business_infos[0]
-        # business_id = business_ids[0]
         response = responses[2]
         
         image_url = response['image_url']
@@ -148,7 +133,6 @@ def app():
                 categories.append(cat['title'])
             st.markdown(f"**Categories**: {', '.join(categories)}")
             st.markdown(f"[_Yelp link_]({response['url']})")
-            # st.text("Please rate how much you like this store:")
             slider_val = st.slider("Rating #3", 1, 5, 1)
             submitted = st.form_submit_button("Submit your rating")
             if submitted:
@@ -158,8 +142,6 @@ def app():
 
     col4, col5, col6 = st.beta_columns(3)
     with col4:
-        # business_info = business_infos[0]
-        # business_id = business_ids[0]
         response = responses[3]
         
         image_url = response['image_url']
@@ -175,7 +157,6 @@ def app():
                 categories.append(cat['title'])
             st.markdown(f"**Categories**: {', '.join(categories)}")
             st.markdown(f"[_Yelp link_]({response['url']})")
-            # st.text("Please rate how much you like this store:")
             slider_val = st.slider("Rating #4", 1, 5, 1)
             submitted = st.form_submit_button("Submit your rating")
             if submitted:
@@ -184,8 +165,6 @@ def app():
                 user_ratings[3] = slider_val
 
     with col5:
-        # business_info = business_infos[0]
-        # business_id = business_ids[0]
         response = responses[4]
         
         image_url = response['image_url']
@@ -201,7 +180,6 @@ def app():
                 categories.append(cat['title'])
             st.markdown(f"**Categories**: {', '.join(categories)}")
             st.markdown(f"[_Yelp link_]({response['url']})")
-            # st.text("Please rate how much you like this store:")
             slider_val = st.slider("Rating #5", 1, 5, 1)
             submitted = st.form_submit_button("Submit your rating")
             if submitted:
@@ -210,8 +188,6 @@ def app():
                 user_ratings[4] = slider_val
 
     with col6:
-        # business_info = business_infos[0]
-        # business_id = business_ids[0]
         response = responses[5]
         
         image_url = response['image_url']
@@ -227,7 +203,6 @@ def app():
                 categories.append(cat['title'])
             st.markdown(f"**Categories**: {', '.join(categories)}")
             st.markdown(f"[_Yelp link_]({response['url']})")
-            # st.text("Please rate how much you like this store:")
             slider_val = st.slider("Rating #6", 1, 5, 1)
             submitted = st.form_submit_button("Submit your rating")
             if submitted:

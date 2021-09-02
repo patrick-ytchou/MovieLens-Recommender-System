@@ -3,9 +3,7 @@ Implementation of Recommender System on MovieLens Dataset
 
 ### __Project Introduction__
 
-This is a matrix factorization based recommender system hosted on AWS EC2 instances. 
-It aims to provide a interface for user to input its preference to different kinds of movies.
-From their initial input, the model will generate recommendations accordingly. 
+This is a recommender system using matrix factorization and deep learning-based residual learning methods hosted on AWS EC2 instances. It aims to provide a interface for user to input its preference to different kinds of movies. From their initial input, the model will generate recommendations accordingly. 
 
 #### __How to Implement__
 

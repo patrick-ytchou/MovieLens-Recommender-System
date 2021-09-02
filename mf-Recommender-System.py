@@ -22,9 +22,6 @@ def preprocessing(df):
     Proprocess the data accordingly.
     """
     
-    # # make userid goes from 0...N-1
-    # df.user_id = df.user_id - 1
-    
     # create a new mapping for business id to create a continuous ids    
     unique_business_ids = set(df.business_id.values)
     buisness2idx = {}
@@ -44,9 +41,7 @@ def preprocessing(df):
     
     df['business_idx'] = df.apply(lambda row: buisness2idx[row.business_id], axis=1)
     df['user_idx'] = df.apply(lambda row: user2idx[row.user_id], axis=1)
-    # df = df.drop(columns=['timestamp'])
 
-    # df = df[['user_idx', 'business_idx', 'stars']]
     df['stars'] = df['stars'].apply(lambda x: float(x))    
 
     df.to_csv('data/edited_review.csv')
@@ -117,12 +112,10 @@ def modeling(df_train, df_test, N, M, epochs, batch_size, dim, reg):
     r = model.fit(  
         x = [df_train.user_idx.values, df_train.business_idx.values],
         y = df_train.stars.values,        
-        # y = df_train.rating.values - mu,
         epochs = epochs,
         batch_size = batch_size,
         validation_data = (
             [df_test.user_idx.values, df_test.business_idx.values],
-            # df_test.rating.values - mu
             df_test.stars.values
         )
     )
@@ -133,11 +126,6 @@ if __name__ == "__main__":
     df = load_data("data/review.csv")
     print("Now: Implement preprocessing.")
     df = preprocessing(df)
-    # df = df[['user_idx', 'business_idx', 'stars']]
     N, M, df_train, df_test = prep_for_modeling(df, train_size = .8)
     print("Now: Model training.")
     model, r = modeling(df_train, df_test, N, M, epochs = 5, batch_size = 2048, dim = 30, reg = 0.1)
-    # print("Now: Save Model.")
-    # model.save("model/model_v1.h5")
-    # print("Now: Save Weights.")
-    # model.save_weights("model/model_weight_v1.h5")
